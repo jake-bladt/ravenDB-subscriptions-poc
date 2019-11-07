@@ -37,7 +37,7 @@ namespace rdbsubpoc
 
             using(IDocumentSession session = RavenStore.OpenSession())
             {
-                var it1 = new ImportantThing { Name = "Whiskers on Kittens " };
+                var it1 = new ImportantThing { Name = "Brown Paper Packages, Tied Up With String" };
                 session.Store(it1);
 
                 Console.WriteLine($"Item '{it1.Name}' created at {FormatTimeOfDay(it1.CreatedOnUtc)}");
