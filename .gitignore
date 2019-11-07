@@ -1,4 +1,7 @@
 *.pfx
 
 .ionide/
+
+.vscode/
 */.vscode/
+.vs/
