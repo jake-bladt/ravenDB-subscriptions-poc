@@ -13,7 +13,7 @@ namespace rdbsubpoc
                 Maps = new HashSet<string>
                 {
                     @"FROM importantThing in docs.ImportantThings
-                        select new { Name, CreatedOnUtc, Status }"
+                        select new { Name = importantThing.Name, CreatedOnUtc = importantThing.CreatedOnUtc, Status = importantThing.Status }"
                 }
             };
         }
