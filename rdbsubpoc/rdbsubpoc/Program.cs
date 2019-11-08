@@ -24,8 +24,7 @@ namespace rdbsubpoc
         {
             var subName = await RavenStore.Subscriptions.CreateAsync<ImportantThing>(it => it.Status == "Quarantined");
             var worker = RavenStore.Subscriptions.GetSubscriptionWorker<ImportantThing>(subName);
-            var task = worker.Run(x => Console.WriteLine($"{x.Items.Count} quarantined items."));
-            await task;
+            await worker.Run(x => Console.WriteLine($"{x.Items.Count} quarantined items."));
         }
 
         static void Main(string[] args)
