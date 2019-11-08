@@ -35,15 +35,17 @@ namespace rdbsubpoc
             };
             RavenStore.Initialize();
 
+            new ImportantThing_Search().Execute(RavenStore);
+
             using(IDocumentSession session = RavenStore.OpenSession())
             {
-                var it1 = new ImportantThing { Name = "Brown Paper Packages, Tied Up With String" };
-                session.Store(it1);
-
-                Console.WriteLine($"Item '{it1.Name}' created at {FormatTimeOfDay(it1.CreatedOnUtc)}");
+                for(int i = 2233; i <= 23333; i++)
+                {
+                    var h = new ImportantThing { Name = $"Not-So-Suspicious Item #{i}", Status = "Nothing to see here." };
+                    session.Store(h);
+                }
+                session.SaveChanges();
             }
-
-            Console.ReadLine();
 
         }
     }

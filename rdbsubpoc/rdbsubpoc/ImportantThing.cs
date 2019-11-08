@@ -4,9 +4,8 @@ namespace rdbsubpoc
 {
     public class ImportantThing
     {
-        public ImportantThing() { CreatedOnUtc = DateTime.UtcNow; }
-
         public string Name { get; set; }
-        public DateTime CreatedOnUtc { get; set; }
+        public DateTime CreatedOnUtc { get; set; } = DateTime.UtcNow;
+        public string Status { get; set; } = "Available";
     }
 }
