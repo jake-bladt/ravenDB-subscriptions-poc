@@ -1,8 +1,10 @@
-﻿using System;
+﻿#pragma warning disable 4014
+
+using System;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Threading.Tasks;
 
 using Raven.Client.Documents;
 using Raven.Client.Documents.Session;
@@ -18,11 +20,18 @@ namespace rdbsubpoc
             return dt.ToString("HH:mm:ss");
         }
 
+        static async Task WatchSubscription()
+        {
+            var subName = await RavenStore.Subscriptions.CreateAsync<ImportantThing>(it => it.Status == "Quarantined");
+            var worker = RavenStore.Subscriptions.GetSubscriptionWorker<ImportantThing>(subName);
+            var task = worker.Run(x => Console.WriteLine($"{x.Items.Count} quarantined items."));
+            await task;
+        }
+
         static void Main(string[] args)
         {
             var certPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase).Replace(@"file:\", String.Empty), 
                 "free.jakebcodes.client.certificate.pfx");
-            // var cert = Encoding.UTF8.GetBytes(File.ReadAllText(certPath));
             RavenStore = new DocumentStore
             {
                 Urls = new[]
@@ -36,17 +45,22 @@ namespace rdbsubpoc
             RavenStore.Initialize();
 
             new ImportantThing_Search().Execute(RavenStore);
+            WatchSubscription();
 
             using(IDocumentSession session = RavenStore.OpenSession())
             {
-                for(int i = 2233; i <= 23333; i++)
+                for(int j = 11; j <= 20; j++)
                 {
-                    var h = new ImportantThing { Name = $"Not-So-Suspicious Item #{i}", Status = "Nothing to see here." };
-                    session.Store(h);
+                    for(int i = 1; i <= Math.Pow(j, 2.0); i++)
+                    {
+                        var h = new ImportantThing { Name = $"Virus #{i * j}", Status = "Quarantined" };
+                        session.Store(h);
+                    }
+                    session.SaveChanges();
                 }
-                session.SaveChanges();
             }
 
+            Console.ReadLine();
         }
     }
 }
